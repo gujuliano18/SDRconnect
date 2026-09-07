@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SDRconnect Web Interface - Controle Avançado</title>
+    <link rel="stylesheet" href="/sdr/css/style.css">
+</head>
+<body>
+    <!-- Tooltip global (fora de qualquer overflow) -->
+    <div id="global-tooltip"></div>
+
+    <!-- ==================== HEADER ==================== -->
+    <header id="header">
+        <div id="header-left">
+            <button id="btn-toggle-sidebar" title="Mostrar/Ocultar painel lateral">☰</button>
+            <h1>
+                📡 <span data-i18n="app_title">SDRconnect Web</span>
+                <small data-i18n="app_version">v1.0.3 · API WebSocket</small>
+            </h1>
+        </div>
+        <div id="connection-status">
+            <span id="status-label" data-i18n="header.disconnected">Desconectado</span>
+            <span id="status-indicator" class="status-disconnected"></span>
+            <button id="btn-connect" class="btn btn-success" data-i18n="header.connect">Conectar</button>
+            <button id="btn-disconnect" class="btn btn-danger" style="display:none;" data-i18n="header.disconnect">Desconectar</button>
+        </div>
+    </header>
+
+    <!-- ==================== MAIN ==================== -->
+    <div id="main-container">
+        <!-- ===== SIDEBAR ===== -->
+        <aside id="sidebar">
+            <h3>📟 <span data-i18n="sidebar.device">Dispositivo</span></h3>
+            <div class="control-group">
+                <div class="label-with-tip">
+                    <label for="sel-device" data-i18n="sidebar.device_label">Dispositivo</label>
+                    <span class="info-tip" data-i18n-tooltip="sidebar.device_tooltip">?
+                        <span class="tooltip-text">Seleciona o dispositivo SDR ativo. A lista é obtida automaticamente do SDRconnect.</span>
+                    </span>
+                </div>
+                <div class="field-row">
+                    <select id="sel-device"><option value="" data-i18n="sidebar.device_loading">Carregando...</option></select>
+                    <button id="btn-refresh-devices" class="btn btn-sm" title="Atualizar lista de dispositivos">⟳</button>
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="label-with-tip">
+                    <label for="sel-channel" data-i18n="sidebar.channel">Canal</label>
+                    <span class="info-tip" data-i18n-tooltip="sidebar.channel_tooltip">?
+                        <span class="tooltip-text">Para dispositivos dual-tuner: Primary = primeiro canal, Secondary = segundo canal.</span>
+                    </span>
+                </div>
+                <select id="sel-channel">
+                    <option value="primary" data-i18n="sidebar.primary">Primary</option>
+                    <option value="secondary" data-i18n="sidebar.secondary">Secondary</option>
+                </select>
+            </div>
+
+            <h3>📻 <span data-i18n="sidebar.tuning">Sintonia</span></h3>
+            <div class="control-group">
+                <div class="label-with-tip">
+                    <label for="freq-input" data-i18n="sidebar.frequency">Frequência (Hz)</label>
+                    <span class="info-tip" data-i18n-tooltip="sidebar.frequency_tooltip">?
+                        <span class="tooltip-text">Frequência central do VFO (oscilador local). Ex: 100000000 = 100 MHz.</span>
+                    </span>
+                </div>
+                <div class="field-row">
+                    <input type="number" id="freq-input" value="100000000" step="1000">
+                    <button id="btn-set-freq" class="btn btn-primary" data-i18n="sidebar.set">Definir</button>
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="label-with-tip">
+                    <label for="sel-demod" data-i18n="sidebar.demodulator">Demodulador</label>
+                    <span class="info-tip" data-i18n-tooltip="sidebar.demodulator_tooltip">?
+                        <span class="tooltip-text">Modo de demodulação: AM (rádio AM), USB/LSB (banda lateral), NFM (FM estreito), WFM (FM largo), CW (código morse), SAM (AM síncrono).</span>
+                    </span>
+                </div>
+                <select id="sel-demod">
+                    <option value="AM">AM</option>
+                    <option value="USB">USB</option>
+                    <option value="LSB">LSB</option>
+                    <option value="NFM">NFM</option>
+                    <option value="WFM" selected>WFM</option>
+                    <option value="CW">CW</option>
+                    <option value="SAM">SAM</option>
+                </select>
+            </div>
+
+            <h3>⚙️ <span data-i18n="sidebar.filter_gain">Filtro &amp; Ganho</span></h3>
+            <div class="control-group">
+                <div class="label-with-tip">
+                    <label for="filter-bw" data-i18n="sidebar.bandwidth">Largura de Banda (Hz)</label>
+                    <span class="info-tip" data-i18n-tooltip="sidebar.bandwidth_tooltip">?
+                        <span class="tooltip-text">Largura de banda do filtro VFO. Para WFM, use ~200000 (200 kHz). Para AM, ~10000 (10 kHz).</span>
+                    </span>
+                </div>
+                <input type="number" id="filter-bw" value="200000" step="1000">
+            </div>
+            <div class="control-group">
+                <div class="label-with-tip">
+                    <label for="lna-gain" data-i18n="sidebar.rf_gain">Ganho RF (LNA)</label>
+                    <span class="info-tip" data-i18n-tooltip="sidebar.rf_gain_tooltip">?
+                        <span class="tooltip-text">Ganho do amplificador de baixo ruído (LNA). Valores entre min e max obtidos do dispositivo.</span>
+                    </span>
+                </div>
+                <input type="number" id="lna-gain" value="0" step="1">
+            </div>
+
+            <h3>🔊 <span data-i18n="sidebar.audio">Áudio</span></h3>
+            <div class="control-group">
+                <div class="field-row">
+                    <div class="toggle-wrap">
+                        <input type="checkbox" id="chk-audio-stream" checked>
+                        <span class="toggle-label" data-i18n="sidebar.audio_stream">Stream Áudio</span>
+                    </div>
+                    <span class="info-tip" data-i18n-tooltip="sidebar.audio_stream_tooltip">?
+                        <span class="tooltip-text">Habilita o envio de áudio demodulado (PCM 48kHz) via WebSocket.</span>
+                    </span>
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="label-with-tip">
+                    <label for="audio-volume" data-i18n="sidebar.volume">Volume</label>
+                    <span class="info-tip" data-i18n-tooltip="sidebar.volume_tooltip">?
+                        <span class="tooltip-text">Volume de reprodução do áudio (0-100%).</span>
+                    </span>
+                </div>
+                <input type="range" id="audio-volume" min="0" max="100" value="70">
+            </div>
+            <div class="control-group">
+                <div class="field-row">
+                    <div class="toggle-wrap">
+                        <input type="checkbox" id="chk-mute">
+                        <span class="toggle-label" data-i18n="sidebar.mute">Mudo</span>
+                    </div>
+                    <div class="toggle-wrap">
+                        <input type="checkbox" id="chk-squelch">
+                        <span class="toggle-label" data-i18n="sidebar.squelch">Squelch</span>
+                    </div>
+                    <span class="info-tip" data-i18n-tooltip="sidebar.squelch_tooltip">?
+                        <span class="tooltip-text">Squelch: silencia o áudio quando o sinal está abaixo do limiar definido.</span>
+                    </span>
+                </div>
+            </div>
+
+            <h3>💾 <span data-i18n="sidebar.data">Dados</span></h3>
+            <div class="control-group">
+                <div class="field-row">
+                    <div class="toggle-wrap">
+                        <input type="checkbox" id="chk-iq-stream">
+                        <span class="toggle-label" data-i18n="sidebar.iq_stream">Stream IQ</span>
+                    </div>
+                    <span class="info-tip" data-i18n-tooltip="sidebar.iq_stream_tooltip">?
+                        <span class="tooltip-text">Habilita o envio de dados de IQ (sinal bruto) para processamento avançado.</span>
+                    </span>
+                </div>
+                <div class="field-row" style="margin-top:7px;">
+                    <div class="toggle-wrap">
+                        <input type="checkbox" id="chk-spectrum-stream" checked>
+                        <span class="toggle-label" data-i18n="sidebar.spectrum_stream">Stream Espectro</span>
+                    </div>
+                    <span class="info-tip" data-i18n-tooltip="sidebar.spectrum_stream_tooltip">?
+                        <span class="tooltip-text">Habilita o envio de bins FFT para visualização do espectro (waterfall).</span>
+                    </span>
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="field-row">
+                    <button id="btn-record-iq" class="btn btn-sm btn-primary" data-i18n="sidebar.record_iq">Gravar IQ</button>
+                    <button id="btn-record-audio" class="btn btn-sm btn-success" data-i18n="sidebar.record_audio">Gravar Áudio</button>
+                    <button id="btn-stop-record" class="btn btn-sm btn-danger" data-i18n="sidebar.stop_record">Parar</button>
+                    <span class="info-tip" data-i18n-tooltip="sidebar.record_tooltip">?
+                        <span class="tooltip-text">Gravação: IQ (sinal bruto) ou Áudio (demodulado). Os arquivos são salvos pelo SDRconnect.</span>
+                    </span>
+                </div>
+            </div>
+
+            <h3>📁 <span data-i18n="sidebar.profile">Perfil</span></h3>
+            <div class="control-group">
+                <div class="field-row">
+                    <input type="text" id="profile-name" placeholder="Nome do perfil" data-i18n-placeholder="sidebar.profile_placeholder">
+                    <button id="btn-apply-profile" class="btn btn-sm btn-primary" data-i18n="sidebar.apply">Aplicar</button>
+                </div>
+            </div>
+
+            <!-- ===== IDIOMA ===== -->
+            <h3>🌐 <span data-i18n="sidebar.language">Idioma</span></h3>
+            <div class="control-group">
+                <div class="language-selector">
+                    <select id="lang-selector">
+                        <option value="pt-BR">Português (BR)</option>
+                        <option value="en-US">English (US)</option>
+                    </select>
+                    <span class="info-tip">?
+                        <span class="tooltip-text">Selecione o idioma da interface. / Select the interface language.</span>
+                    </span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- ===== CONTEÚDO ===== -->
+        <div id="content">
+            <div id="tabs">
+                <button class="tab-btn active" data-tab="tab-spectrum" data-i18n="tabs.spectrum">📊 Espectro</button>
+                <button class="tab-btn" data-tab="tab-audio" data-i18n="tabs.audio">🎵 Áudio</button>
+                <button class="tab-btn" data-tab="tab-metrics" data-i18n="tabs.metrics">📈 Métricas</button>
+                <button class="tab-btn" data-tab="tab-advanced" data-i18n="tabs.advanced">🔧 Avançado</button>
+            </div>
+
+            <!-- ABA ESPECTRO -->
+            <div id="tab-spectrum" class="tab-content active">
+                <div class="spectrum-container">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                        <span style="font-size:13px; color:#6a8aaa;" data-i18n="spectrum.panoramic">Panorâmico</span>
+                        <span style="font-size:12px; color:#4a6a8a;" id="spectrum-info" data-i18n="spectrum.fft_waiting">FFT: aguardando dados...</span>
+                    </div>
+                    <canvas id="spectrum-canvas"></canvas>
+                    <div style="margin-top:4px; display:flex; justify-content:space-between; font-size:11px; color:#4a6a8a;">
+                        <span id="freq-min">0 Hz</span>
+                        <span id="freq-center">--</span>
+                        <span id="freq-max">0 Hz</span>
+                    </div>
+                </div>
+                <div class="spectrum-container">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                        <span style="font-size:13px; color:#6a8aaa;">Waterfall</span>
+                    </div>
+                    <canvas id="waterfall-canvas"></canvas>
+                </div>
+            </div>
+
+            <!-- ABA ÁUDIO -->
+            <div id="tab-audio" class="tab-content">
+                <div class="audio-player">
+                    <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+                        <span style="font-size:13px; color:#6a8aaa;" data-i18n="audio.title">📢 Áudio</span>
+                        <button id="btn-play-audio" class="btn btn-success" data-i18n="audio.play">▶ Play</button>
+                        <button id="btn-stop-audio" class="btn btn-danger" data-i18n="audio.stop">⏹ Stop</button>
+                    </div>
+                    <div class="volume-control">
+                        <span style="font-size:12px; color:#6a8aaa;">🔊</span>
+                        <input type="range" id="audio-player-volume" min="0" max="100" value="80">
+                        <span id="volume-label" style="font-size:12px; color:#6a8aaa; min-width:32px;">80%</span>
+                    </div>
+                    <span style="font-size:12px; color:#4a6a8a;" id="audio-status" data-i18n="audio.stopped">Parado</span>
+                </div>
+                <div class="metrics-grid" id="audio-metrics">
+                    <div class="metric-card">
+                        <div class="metric-value" id="audio-signal-power">--</div>
+                        <div class="metric-label" data-i18n="audio.signal_power">Potência do Sinal</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="audio-signal-snr">--</div>
+                        <div class="metric-label" data-i18n="audio.snr">SNR</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="audio-rds-ps">--</div>
+                        <div class="metric-label" data-i18n="audio.rds_ps">RDS PS</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="audio-rds-text">--</div>
+                        <div class="metric-label" data-i18n="audio.rds_text">RDS Texto</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ABA MÉTRICAS -->
+            <div id="tab-metrics" class="tab-content">
+                <div class="metrics-grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
+                    <div class="metric-card">
+                        <div class="metric-value" id="metric-frequency">--</div>
+                        <div class="metric-label" data-i18n="metrics.frequency">Frequência</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="metric-sample-rate">--</div>
+                        <div class="metric-label" data-i18n="metrics.sample_rate">Taxa de Amostragem</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="metric-filter-bw">--</div>
+                        <div class="metric-label" data-i18n="metrics.filter_bw">Filtro BW</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="metric-demod">--</div>
+                        <div class="metric-label" data-i18n="metrics.demodulator">Demodulador</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="metric-lna">--</div>
+                        <div class="metric-label" data-i18n="metrics.lna_gain">Ganho LNA</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="metric-overload">--</div>
+                        <div class="metric-label" data-i18n="metrics.overload">Sobrecarga</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="metric-streaming">--</div>
+                        <div class="metric-label" data-i18n="metrics.streaming">Streaming</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="metric-device">--</div>
+                        <div class="metric-label" data-i18n="metrics.device">Dispositivo Ativo</div>
+                    </div>
+                </div>
+                <div style="margin-top:16px;">
+                    <h4 style="color:#5a7a9a; margin-bottom:8px;" data-i18n="metrics.log">📋 Log de Eventos</h4>
+                    <div id="log-container"></div>
+                </div>
+            </div>
+
+            <!-- ABA AVANÇADO -->
+            <div id="tab-advanced" class="tab-content">
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:18px;">
+                    <div>
+                        <h4 style="color:#5a7a9a; margin-bottom:10px; font-size:14px;" data-i18n="advanced.properties">🎛️ Propriedades Avançadas</h4>
+                        <div class="control-group">
+                            <div class="label-with-tip">
+                                <label for="prop-key" data-i18n="advanced.property">Propriedade</label>
+                                <span class="info-tip" data-i18n-tooltip="advanced.property_tooltip">?
+                                    <span class="tooltip-text">Nome da propriedade interna (ex: device_center_frequency, agc_enable, noise_reduction_enable).</span>
+                                </span>
+                            </div>
+                            <input type="text" id="prop-key" placeholder="ex: agc_enable" value="agc_enable">
+                        </div>
+                        <div class="control-group">
+                            <div class="label-with-tip">
+                                <label for="prop-value" data-i18n="advanced.value">Valor</label>
+                                <span class="info-tip" data-i18n-tooltip="advanced.value_tooltip">?
+                                    <span class="tooltip-text">Valor a ser definido (string, número ou booleano).</span>
+                                </span>
+                            </div>
+                            <div class="field-row">
+                                <input type="text" id="prop-value" placeholder="true / 1000000">
+                                <button id="btn-set-prop" class="btn btn-primary" data-i18n="advanced.set">Set</button>
+                                <button id="btn-get-prop" class="btn btn-sm" data-i18n="advanced.get">Get</button>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                                <button id="btn-enable-audio-limiter" class="btn btn-sm" data-i18n="advanced.limiter">🔇 Limiter</button>
+                                <button id="btn-enable-agc" class="btn btn-sm" data-i18n="advanced.agc">📈 AGC</button>
+                                <button id="btn-enable-nr" class="btn btn-sm" data-i18n="advanced.nr">🔊 NR</button>
+                                <button id="btn-enable-rds" class="btn btn-sm" data-i18n="advanced.rds">📻 RDS</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 style="color:#5a7a9a; margin-bottom:10px; font-size:14px;" data-i18n="advanced.commands">📡 Comandos Especiais</h4>
+                        <div class="control-group">
+                            <div class="field-row">
+                                <button id="btn-device-stream-on" class="btn btn-success" data-i18n="advanced.device_stream_on">▶ Device Stream ON</button>
+                                <button id="btn-device-stream-off" class="btn btn-danger" data-i18n="advanced.device_stream_off">⏹ Device Stream OFF</button>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="label-with-tip">
+                                <label for="cmd-json" data-i18n="advanced.raw_command">Comando JSON Bruto</label>
+                                <span class="info-tip" data-i18n-tooltip="advanced.raw_command_tooltip">?
+                                    <span class="tooltip-text">Envia comandos disponíveis JSON diretamente para a API.</span>
+                                </span>
+                            </div>
+                            <textarea id="cmd-json" rows="3" style="width:100%; background:#0a121e; border:1px solid #1a2a3a; color:#e0e8f0; padding:7px; border-radius:5px; font-family:monospace; font-size:12px; resize:vertical;">{"event_type":"set_property","property":"device_vfo_frequency","value":"101000000"}</textarea>
+                            <button id="btn-send-json" class="btn btn-primary" style="margin-top:7px;" data-i18n="advanced.send">Enviar Comando</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/sdr/js/i18n.js" defer></script>
+    <script src="/sdr/js/core_interface.js" defer></script>
+</body>
+</html>
