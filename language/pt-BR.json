@@ -1,0 +1,149 @@
+{
+  "app_title": "SDRconnect Web",
+  "app_version": "v1.0.3 · API WebSocket",
+  
+  "header": {
+    "connection_status": "Status da Conexão",
+    "connected": "Conectado",
+    "disconnected": "Desconectado",
+    "connecting": "Conectando...",
+    "connect": "Conectar",
+    "disconnect": "Desconectar"
+  },
+  
+  "sidebar": {
+    "device": "Dispositivo",
+    "device_label": "Dispositivo",
+	"device_loading": "Carregando...",
+    "device_tooltip": "Seleciona o dispositivo SDR ativo. A lista é obtida automaticamente do SDRconnect.",
+    "channel": "Canal",
+    "channel_tooltip": "Para dispositivos dual-tuner: Primary = primeiro canal, Secondary = segundo canal.",
+    "primary": "Primary",
+    "secondary": "Secondary",
+    "tuning": "Sintonia",
+    "frequency": "Frequência (Hz)",
+    "frequency_tooltip": "Frequência central do VFO (oscilador local). Ex: 100000000 = 100 MHz.",
+    "set": "Definir",
+    "demodulator": "Demodulador",
+    "demodulator_tooltip": "Modo de demodulação: AM (rádio AM), USB/LSB (banda lateral), NFM (FM estreito), WFM (FM largo), CW (código morse), SAM (AM síncrono).",
+    "filter_gain": "Filtro & Ganho",
+    "bandwidth": "Largura de Banda (Hz)",
+    "bandwidth_tooltip": "Largura de banda do filtro VFO. Para WFM, use ~200000 (200 kHz). Para AM, ~10000 (10 kHz).",
+    "rf_gain": "Ganho RF (LNA)",
+    "rf_gain_tooltip": "Ganho do amplificador de baixo ruído (LNA). Valores entre min e max obtidos do dispositivo.",
+    "audio": "Áudio",
+    "audio_stream": "Stream Áudio",
+    "audio_stream_tooltip": "Habilita o envio de áudio demodulado (PCM 48kHz) via WebSocket.",
+    "volume": "Volume",
+    "volume_tooltip": "Volume de reprodução do áudio (0-100%).",
+    "mute": "Mudo",
+    "squelch": "Squelch",
+    "squelch_tooltip": "Squelch: silencia o áudio quando o sinal está abaixo do limiar definido.",
+    "data": "Dados",
+    "iq_stream": "Stream IQ",
+    "iq_stream_tooltip": "Habilita o envio de dados de IQ (sinal bruto) para processamento avançado.",
+    "spectrum_stream": "Stream Espectro",
+    "spectrum_stream_tooltip": "Habilita o envio de bins FFT para visualização do espectro (waterfall).",
+    "record_iq": "Gravar IQ",
+    "record_audio": "Gravar Áudio",
+    "stop_record": "Parar",
+    "record_tooltip": "Gravação: IQ (sinal bruto) ou Áudio (demodulado). Os arquivos são salvos pelo SDRconnect.",
+    "profile": "Perfil",
+    "profile_placeholder": "Nome do perfil",
+    "apply": "Aplicar",
+    "language": "Idioma"
+  },
+  
+  "tabs": {
+    "spectrum": "📊 Espectro",
+    "audio": "🎵 Áudio",
+    "metrics": "📈 Métricas",
+    "advanced": "🔧 Avançado"
+  },
+  
+  "spectrum": {
+    "panoramic": "Panorâmico",
+    "fft_waiting": "FFT: aguardando dados...",
+    "fft_bins": "FFT: {bins} bins",
+    "waiting_data": "Aguardando dados de espectro..."
+  },
+  
+  "audio": {
+    "title": "📢 Áudio",
+    "play": "▶ Play",
+    "stop": "⏹ Stop",
+    "stopped": "Parado",
+    "playing": "Reproduzindo...",
+    "preparing": "Preparando...",
+    "signal_power": "Potência do Sinal",
+    "snr": "SNR",
+    "rds_ps": "RDS PS",
+    "rds_text": "RDS Texto"
+  },
+  
+  "metrics": {
+    "frequency": "Frequência",
+    "sample_rate": "Taxa de Amostragem",
+    "filter_bw": "Filtro BW",
+    "demodulator": "Demodulador",
+    "lna_gain": "Ganho LNA",
+    "overload": "Sobrecarga",
+    "overload_yes": "⚠️ SIM",
+    "overload_no": "✅ NÃO",
+    "streaming": "Streaming",
+    "streaming_active": "▶ Ativo",
+    "streaming_stopped": "⏹ Parado",
+    "device": "Dispositivo Ativo",
+    "log": "📋 Log de Eventos"
+  },
+  
+  "advanced": {
+    "properties": "🎛️ Propriedades Avançadas",
+    "property": "Propriedade",
+    "property_tooltip": "Nome da propriedade interna (ex: device_center_frequency, agc_enable, noise_reduction_enable).",
+    "value": "Valor",
+    "value_tooltip": "Valor a ser definido (string, número ou booleano).",
+    "set": "Set",
+    "get": "Get",
+    "commands": "📡 Comandos Especiais",
+    "device_stream_on": "▶ Device Stream ON",
+    "device_stream_off": "⏹ Device Stream OFF",
+    "raw_command": "Comando JSON Bruto",
+    "raw_command_tooltip": "Envia comandos disponíveis JSON diretamente para a API.",
+    "send": "Enviar Comando",
+    "limiter": "🔇 Limiter",
+    "agc": "📈 AGC",
+    "nr": "🔊 NR",
+    "rds": "📻 RDS"
+  },
+  
+  "log": {
+    "interface_loaded": "Interface carregada. Aguardando conexão.",
+    "click_connect": "🔌 Clique em \"Conectar\" para iniciar a comunicação com o SDRconnect.",
+    "ensure_running": "📡 Certifique-se de que o SDRconnect está rodando e a API WebSocket está ativa.",
+    "url_configured": "🌐 URL configurada: {url}",
+    "connecting": "Conectando ao SDRconnect...",
+    "connected": "Conectado ao SDRconnect.",
+    "connection_closed": "Conexão fechada.",
+    "websocket_error": "Erro WebSocket: {error}",
+    "already_connected": "Já conectado ou conectando.",
+    "not_connected": "Não conectado. Não é possível enviar comando.",
+    "invalid_json": "JSON inválido: {error}",
+    "json_parse_error": "Erro ao processar JSON: {error}",
+    "audio_started": "Áudio iniciado.",
+    "audio_stopped": "Áudio parado.",
+    "channel_changed": "Canal alterado para: {channel}",
+    "audio_stream_enabled": "Audio stream {status}",
+    "audio_stream_enabled_true": "habilitado",
+    "audio_stream_enabled_false": "desabilitado",
+    "iq_stream_enabled": "IQ stream {status}",
+    "spectrum_stream_enabled": "Spectrum stream {status}",
+    "devices_available": "Dispositivos disponíveis: {devices}",
+    "unknown_payload": "⚠️ Payload type desconhecido: {type} ({bytes} bytes)",
+    "iq_data_received": "📊 IQ data recebido ({bytes} bytes)"
+  },
+  
+  "errors": {
+    "connection_failed": "Falha na conexão"
+  }
+}
