@@ -1,0 +1,149 @@
+{
+  "app_title": "SDRconnect Web",
+  "app_version": "v1.0.3 · WebSocket API",
+  
+  "header": {
+    "connection_status": "Connection Status",
+    "connected": "Connected",
+    "disconnected": "Disconnected",
+    "connecting": "Connecting...",
+    "connect": "Connect",
+    "disconnect": "Disconnect"
+  },
+  
+  "sidebar": {
+    "device": "Device",
+    "device_label": "Device",
+	"device_loading": "Loading...",
+    "device_tooltip": "Selects the active SDR device. The list is automatically obtained from SDRconnect.",
+    "channel": "Channel",
+    "channel_tooltip": "For dual-tuner devices: Primary = first channel, Secondary = second channel.",
+    "primary": "Primary",
+    "secondary": "Secondary",
+    "tuning": "Tuning",
+    "frequency": "Frequency (Hz)",
+    "frequency_tooltip": "VFO center frequency (local oscillator). Ex: 100000000 = 100 MHz.",
+    "set": "Set",
+    "demodulator": "Demodulator",
+    "demodulator_tooltip": "Demodulation mode: AM, USB/LSB (sideband), NFM (narrow FM), WFM (wide FM), CW (morse code), SAM (synchronous AM).",
+    "filter_gain": "Filter & Gain",
+    "bandwidth": "Bandwidth (Hz)",
+    "bandwidth_tooltip": "VFO filter bandwidth. For WFM, use ~200000 (200 kHz). For AM, ~10000 (10 kHz).",
+    "rf_gain": "RF Gain (LNA)",
+    "rf_gain_tooltip": "Low Noise Amplifier (LNA) gain. Values between min and max obtained from the device.",
+    "audio": "Audio",
+    "audio_stream": "Audio Stream",
+    "audio_stream_tooltip": "Enables sending demodulated audio (PCM 48kHz) via WebSocket.",
+    "volume": "Volume",
+    "volume_tooltip": "Audio playback volume (0-100%).",
+    "mute": "Mute",
+    "squelch": "Squelch",
+    "squelch_tooltip": "Squelch: mutes audio when signal is below the set threshold.",
+    "data": "Data",
+    "iq_stream": "IQ Stream",
+    "iq_stream_tooltip": "Enables sending raw IQ data for advanced processing.",
+    "spectrum_stream": "Spectrum Stream",
+    "spectrum_stream_tooltip": "Enables sending FFT bins for spectrum visualization (waterfall).",
+    "record_iq": "Record IQ",
+    "record_audio": "Record Audio",
+    "stop_record": "Stop",
+    "record_tooltip": "Recording: IQ (raw signal) or Audio (demodulated). Files are saved by SDRconnect.",
+    "profile": "Profile",
+    "profile_placeholder": "Profile name",
+    "apply": "Apply",
+    "language": "Language"
+  },
+  
+  "tabs": {
+    "spectrum": "📊 Spectrum",
+    "audio": "🎵 Audio",
+    "metrics": "📈 Metrics",
+    "advanced": "🔧 Advanced"
+  },
+  
+  "spectrum": {
+    "panoramic": "Panoramic",
+    "fft_waiting": "FFT: waiting for data...",
+    "fft_bins": "FFT: {bins} bins",
+    "waiting_data": "Waiting for spectrum data..."
+  },
+  
+  "audio": {
+    "title": "📢 Audio",
+    "play": "▶ Play",
+    "stop": "⏹ Stop",
+    "stopped": "Stopped",
+    "playing": "Playing...",
+    "preparing": "Preparing...",
+    "signal_power": "Signal Power",
+    "snr": "SNR",
+    "rds_ps": "RDS PS",
+    "rds_text": "RDS Text"
+  },
+  
+  "metrics": {
+    "frequency": "Frequency",
+    "sample_rate": "Sample Rate",
+    "filter_bw": "Filter BW",
+    "demodulator": "Demodulator",
+    "lna_gain": "LNA Gain",
+    "overload": "Overload",
+    "overload_yes": "⚠️ YES",
+    "overload_no": "✅ NO",
+    "streaming": "Streaming",
+    "streaming_active": "▶ Active",
+    "streaming_stopped": "⏹ Stopped",
+    "device": "Active Device",
+    "log": "📋 Event Log"
+  },
+  
+  "advanced": {
+    "properties": "🎛️ Advanced Properties",
+    "property": "Property",
+    "property_tooltip": "Internal property name (ex: device_center_frequency, agc_enable, noise_reduction_enable).",
+    "value": "Value",
+    "value_tooltip": "Value to set (string, number or boolean).",
+    "set": "Set",
+    "get": "Get",
+    "commands": "📡 Special Commands",
+    "device_stream_on": "▶ Device Stream ON",
+    "device_stream_off": "⏹ Device Stream OFF",
+    "raw_command": "Raw JSON Command",
+    "raw_command_tooltip": "Sends raw JSON commands directly to the API.",
+    "send": "Send Command",
+    "limiter": "🔇 Limiter",
+    "agc": "📈 AGC",
+    "nr": "🔊 NR",
+    "rds": "📻 RDS"
+  },
+  
+  "log": {
+    "interface_loaded": "Interface loaded. Waiting for connection.",
+    "click_connect": "🔌 Click \"Connect\" to start communication with SDRconnect.",
+    "ensure_running": "📡 Make sure SDRconnect is running and the WebSocket API is active.",
+    "url_configured": "🌐 URL configured: {url}",
+    "connecting": "Connecting to SDRconnect...",
+    "connected": "Connected to SDRconnect.",
+    "connection_closed": "Connection closed.",
+    "websocket_error": "WebSocket error: {error}",
+    "already_connected": "Already connected or connecting.",
+    "not_connected": "Not connected. Cannot send command.",
+    "invalid_json": "Invalid JSON: {error}",
+    "json_parse_error": "Error parsing JSON: {error}",
+    "audio_started": "Audio started.",
+    "audio_stopped": "Audio stopped.",
+    "channel_changed": "Channel changed to: {channel}",
+    "audio_stream_enabled": "Audio stream {status}",
+    "audio_stream_enabled_true": "enabled",
+    "audio_stream_enabled_false": "disabled",
+    "iq_stream_enabled": "IQ stream {status}",
+    "spectrum_stream_enabled": "Spectrum stream {status}",
+    "devices_available": "Devices available: {devices}",
+    "unknown_payload": "⚠️ Unknown payload type: {type} ({bytes} bytes)",
+    "iq_data_received": "📊 IQ data received ({bytes} bytes)"
+  },
+  
+  "errors": {
+    "connection_failed": "Connection failed"
+  }
+}
